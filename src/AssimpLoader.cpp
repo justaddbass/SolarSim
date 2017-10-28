@@ -54,7 +54,7 @@ bool AssimpLoadFile(
     }
     */
     printf("SUCCESS\n");
-    free vertex_array;
-    free normal_array;
+    delete [] vertex_array;
+    delete [] normal_array;
     return true;
 }

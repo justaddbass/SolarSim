@@ -31,10 +31,10 @@ int main(int, char**) {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 #endif
 
-	//SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-	//SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 16);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 16);
 
-	//SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
     g_window = SDL_CreateWindow("SolarSim", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowWidth, windowHeight, SDL_WINDOW_OPENGL);
     _glContext = SDL_GL_CreateContext(g_window);
@@ -68,30 +68,42 @@ int main(int, char**) {
 #endif
 
 
-    //Mesh sphere("sphere.obj");
     glm::mat4 projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
     glm::mat4 view = glm::lookAt(glm::vec3(0, 10, 10), glm::vec3(0,0,0), glm::vec3(0,1,0));
 	glm::mat4 model = glm::mat4();
-    GLuint shader;
-	GLuint viewID, projectionID, textureID, modelID;
-    shader = LoadShaders("basic.vs", "basic.fs");
-    glUseProgram(shader);
-    viewID = glGetUniformLocation(shader, "view");
-    projectionID = glGetUniformLocation(shader, "projection");
-	//modelID = glGetUniformLocation(shader, "model");
-    glUniformMatrix4fv(viewID, 1 , GL_FALSE, &view[0][0]);
-    glUniformMatrix4fv(projectionID, 1, GL_FALSE, &projection[0][0]);
-
+    GLuint planetShader, sunShader;
+	GLuint pviewID, pprojectionID, sviewID, sprojectionID;
+    planetShader = LoadShaders("basic.vs", "basic.fs");
+	sunShader = LoadShaders("basic.vs", "sun.fs");
+    glUseProgram(planetShader);
+    pviewID = glGetUniformLocation(planetShader, "view");
+    pprojectionID = glGetUniformLocation(planetShader, "projection");
+    glUniformMatrix4fv(pviewID, 1 , GL_FALSE, &view[0][0]);
+    glUniformMatrix4fv(pprojectionID, 1, GL_FALSE, &projection[0][0]);
+	glUseProgram(sunShader);
+	sviewID = glGetUniformLocation(sunShader, "view");
+    sprojectionID = glGetUniformLocation(sunShader, "projection");
+    glUniformMatrix4fv(sviewID, 1 , GL_FALSE, &view[0][0]);
+    glUniformMatrix4fv(sprojectionID, 1, GL_FALSE, &projection[0][0]);
+	glUseProgram(0);
 
 	Simulation sim = Simulation();
-	Planet p = Planet(5, glm::vec3(0,0,0), glm::vec3(0,0,0));
+	Planet p = Planet(5, glm::vec3(1,0,0), glm::vec3(5,0,0));
 	sim.setStar(10);
 	sim.addPlanet(&p);
 
     SDL_Event sdlEvent;
     bool isRunning = true;
 
+	Uint64 NOW = SDL_GetPerformanceCounter();
+	Uint64 LAST = 0;
+	double deltaTime = 0;
+
     while(isRunning) {
+		LAST = NOW;
+   		NOW = SDL_GetPerformanceCounter();
+   		deltaTime = (double)((NOW - LAST)*1000 / SDL_GetPerformanceFrequency() );
+
         SDL_PollEvent(&sdlEvent);
         if(sdlEvent.type == SDL_QUIT) {
             isRunning = false;
@@ -99,9 +111,7 @@ int main(int, char**) {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		sim.Draw(shader);
-
-        // sphere.Draw(shader);
+		sim.Draw(planetShader, sunShader);
 
         SDL_GL_SwapWindow(g_window);
     }

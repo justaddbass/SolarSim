@@ -3,13 +3,13 @@
 
 #include "Celestial.h"
 
-class Star : public Celestial {
+class Star {
 public:
     Star() {};
     Star(int mass);
     void Draw(GLuint shader);
 private:
-
+    Mesh mMesh;
 };
 
 #endif
