@@ -88,9 +88,11 @@ int main(int, char**) {
 	glUseProgram(0);
 
 	Simulation sim = Simulation();
-	Planet p = Planet(5, glm::vec3(1,0,0), glm::vec3(5,0,0));
+	Planet p = Planet(5, glm::vec3(0,0,0.01), glm::vec3(5,0,0));
+	Planet p2 = Planet(10, glm::vec3(0,0,-0.01), glm::vec3(-5,0,0));
 	sim.setStar(10);
 	sim.addPlanet(&p);
+	sim.addPlanet(&p2);
 
     SDL_Event sdlEvent;
     bool isRunning = true;
@@ -111,6 +113,8 @@ int main(int, char**) {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		sim.applyForcePhase();
+		sim.moveCelestialPhase(deltaTime);
 		sim.Draw(planetShader, sunShader);
 
         SDL_GL_SwapWindow(g_window);

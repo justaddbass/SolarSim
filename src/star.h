@@ -8,8 +8,10 @@ public:
     Star() {};
     Star(int mass);
     void Draw(GLuint shader);
+    inline float getMass() {return mMass;}
 private:
     Mesh mMesh;
+    float mMass;
 };
 
 #endif

@@ -12,13 +12,15 @@ public:
     void setStar(int mass);
     void addPlanet(Planet* p);
     void Draw(GLuint shader, GLuint sunShader);
+
+    void applyForcePhase();
+    void moveCelestialPhase(double deltaTime);
 private:
     Star* mSun;
     std::vector<Planet*> mPlanets;
 
-    void applyForcePhase();
-    void moveCelestialPhase(double deltaTime);
-    double gravityPull(double m1, double m2, double r);
+
+    float gravityPull(float m1, float m2, float r);
 };
 
 #endif

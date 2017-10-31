@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-const long double G = 6.674 * pow(10, -11);
+const float G = 6.674 * pow(10, -11);
 
 
 void Simulation::setStar(int mass) {
@@ -13,14 +13,24 @@ void Simulation::addPlanet(Planet* p) {
     mPlanets.push_back(p);
 }
 
-void Simulation::applyForcePhase() {
-    for(std::vector<Planet*>::iterator i = mPlanets.begin(); i != mPlanets.end(); i++) {
-        (*i)->setPull(glm::vec3(0,0,0));
-    }
+float Simulation::gravityPull(float m1, float m2, float r) {
+    return G * ( (m1 * m2) / pow(r, 2));
 }
 
-double Simulation::gravityPull(double m1, double m2, double r) {
-    return G * ( (m1 * m2) / pow(r, 2));
+void Simulation::applyForcePhase() {
+    for(std::vector<Planet*>::iterator i = mPlanets.begin(); i != mPlanets.end(); i++) {
+        glm::vec3 pull;
+
+        //get unit vector towards sun
+        pull = -1.0f * (*i)->getPos();
+        float length = glm::length(pull);
+        pull = glm::normalize(pull);
+
+        //calculate gravitational pull
+        pull = gravityPull((*i)->getMass(), mSun->getMass(), length) * pull;
+
+        (*i)->setPull(pull);
+    }
 }
 
 void Simulation::moveCelestialPhase(double deltaTime) {
