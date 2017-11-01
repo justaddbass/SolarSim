@@ -4,7 +4,6 @@
 
 const float G = 6.674 * pow(10, -11);
 
-
 void Simulation::setStar(int mass) {
     mSun = new Star(mass);
 }

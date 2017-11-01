@@ -68,8 +68,8 @@ int main(int, char**) {
 #endif
 
 
-    glm::mat4 projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
-    glm::mat4 view = glm::lookAt(glm::vec3(0, 10, 10), glm::vec3(0,0,0), glm::vec3(0,1,0));
+    glm::mat4 projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
+    glm::mat4 view = glm::lookAt(glm::vec3(0, 50, 50), glm::vec3(0,0,0), glm::vec3(0,1,0));
 	glm::mat4 model = glm::mat4();
     GLuint planetShader, sunShader;
 	GLuint pviewID, pprojectionID, sviewID, sprojectionID;
@@ -88,9 +88,9 @@ int main(int, char**) {
 	glUseProgram(0);
 
 	Simulation sim = Simulation();
-	Planet p = Planet(5, glm::vec3(0,0,0.01), glm::vec3(5,0,0));
-	Planet p2 = Planet(10, glm::vec3(0,0,-0.01), glm::vec3(-5,0,0));
-	sim.setStar(10);
+	Planet p = Planet(50, glm::vec3(0,0,0.07), glm::vec3(40,0,0));
+	Planet p2 = Planet(5, glm::vec3(0,0,-0.07), glm::vec3(-10,0,0));
+	sim.setStar(100000000);
 	sim.addPlanet(&p);
 	sim.addPlanet(&p2);
 
@@ -120,7 +120,6 @@ int main(int, char**) {
         SDL_GL_SwapWindow(g_window);
     }
 
-    //TwTerminate();
     SDL_Quit();
 
     return 0;

@@ -2,11 +2,12 @@
 
 #include <cstdio>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/matrix_access.hpp>
+
 
 Planet::Planet(int mass, glm::vec3 initialVel, glm::vec3 initialPos) :
     mMesh(Mesh("sphere.obj")) {
     mModel = glm::translate(glm::mat4(), initialPos);
-    mPos = initialPos;
     mInertia = initialVel;
     mMass = mass;
 }
@@ -26,9 +27,13 @@ void Planet::setPull(glm::vec3 pull) {
     mPull = pull;
 }
 
-void Planet::applyPhysics(double timeDelta) {
-    mInertia = mPull + mInertia;
-    mModel = glm::translate(mModel, mInertia);
-    //mInertia = mPull + mInertia;
+glm::vec3 Planet::getPos() {
+    return mModel[3];
+}
 
+void Planet::applyPhysics(double deltaTime) {
+    float length = glm::length(mInertia);
+    mInertia += mPull;
+    mModel = glm::translate(mModel, mInertia);
+    mInertia = glm::normalize(mInertia) * length;
 }

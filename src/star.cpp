@@ -2,6 +2,7 @@
 
 Star::Star(int mass) :
     mMesh(Mesh("sphere.obj")) {
+    mMass = mass;
 }
 
 void Star::Draw(GLuint shader) {
