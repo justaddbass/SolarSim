@@ -33,7 +33,6 @@ glm::vec3 Planet::getPos() {
 
 void Planet::applyPhysics(double deltaTime) {
     float length = glm::length(mInertia);
-    mInertia += mPull;
+    mInertia += mPull / mMass * (float)deltaTime;
     mModel = glm::translate(mModel, mInertia);
-    mInertia = glm::normalize(mInertia) * length;
 }

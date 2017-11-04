@@ -88,8 +88,8 @@ int main(int, char**) {
 	glUseProgram(0);
 
 	Simulation sim = Simulation();
-	Planet p = Planet(50, glm::vec3(0,0,0.07), glm::vec3(40,0,0));
-	Planet p2 = Planet(5, glm::vec3(0,0,-0.07), glm::vec3(-10,0,0));
+	Planet p = Planet(50, glm::vec3(0,0,0.05), glm::vec3(30,0,0));
+	Planet p2 = Planet(25, glm::vec3(0,0,-0.05), glm::vec3(-20,0,0));
 	sim.setStar(100000000);
 	sim.addPlanet(&p);
 	sim.addPlanet(&p2);
