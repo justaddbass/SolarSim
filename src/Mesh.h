@@ -16,7 +16,7 @@
 
 class Mesh {
 public:
-    Mesh() {}
+    Mesh() {};
     Mesh(const char* path);
     //Mesh(const char* path, btTriangleMesh &mesh);
     ~Mesh();
@@ -24,10 +24,10 @@ public:
     void Draw(GLuint shader);
 private:
     unsigned int indices_count;
-    GLuint textureID;
+    // GLuint textureID;
     GLuint vao;
     GLuint vertex_buffer;
-    GLuint uv_buffer;
+    //GLuint uv_buffer;
     GLuint normal_buffer;
     GLuint element_buffer;
 };

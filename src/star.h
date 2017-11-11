@@ -6,12 +6,11 @@
 class Star {
 public:
     Star() {};
-    Star(int mass);
+    Star(double mass, float scale);
     void Draw(GLuint shader);
-    inline float getMass() {return mMass;}
+    //inline double getMass() {return mMass;}
 private:
-    Mesh mMesh;
-    float mMass;
+
 };
 
 #endif

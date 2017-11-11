@@ -77,9 +77,9 @@ Mesh::~Mesh() {
 void Mesh::Draw(GLuint shader) {
     glBindVertexArray(vao);
 
-    glActiveTexture(GL_TEXTURE0);
-    glUniform1i(glGetUniformLocation(shader, "texture_sampler"), 0);
-    glBindTexture(GL_TEXTURE_2D, textureID);
+    // glActiveTexture(GL_TEXTURE0);
+    // glUniform1i(glGetUniformLocation(shader, "texture_sampler"), 0);
+    // glBindTexture(GL_TEXTURE_2D, textureID);
     //glDrawElements(GL_TRIANGLES, indices_count, GL_UNSIGNED_SHORT, (void*)0 );
 	glDrawArrays(GL_TRIANGLES, 0, indices_count);
 

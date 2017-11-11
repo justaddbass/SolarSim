@@ -10,8 +10,9 @@ out vec2 normal;
 uniform mat4 view;
 uniform mat4 projection;
 uniform mat4 model;
+uniform float scale;
 
 void main() {
-    gl_Position = projection * view * model * vec4(vertexPosition_modelspace, 1.0);
+    gl_Position = projection * view * model * vec4(scale * vertexPosition_modelspace, 1.0);
     //uv = vertexUV;
 }

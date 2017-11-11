@@ -1,47 +1,66 @@
 #include "Simulation.h"
 
 #include <cmath>
+#include <cstdio>
 
 const float G = 6.674 * pow(10, -11);
 
-void Simulation::setStar(int mass) {
-    mSun = new Star(mass);
+Simulation::Simulation(camera* cam) {
+    mCamera = cam;
 }
 
-void Simulation::addPlanet(Planet* p) {
-    mPlanets.push_back(p);
+void Simulation::setCameraFollow(Celestial* c) {
+    follow = c;
 }
 
-float Simulation::gravityPull(float m1, float m2, float r) {
+void Simulation::addCelestial(Celestial* c) {
+    mCelestial.push_back(c);
+}
+
+// meters and kilograms
+double Simulation::gravityPull(double m1, double m2, double r) {
     return G * ( (m1 * m2) / pow(r, 2));
 }
 
+// kilometers and kilograms
+double Simulation::adjustedGravity(double m1, double m2, double r) {
+    return gravityPull(m1 * 1000, m2 * 1000, r);
+}
+
+glm::dvec3 Simulation::calculateForce(Celestial c1, Celestial c2) {
+    glm::dvec3 pull;
+
+    //get unit vector towards sun
+    pull = c1.getPos() - c2.getPos();
+    double length = glm::length(pull);
+    pull = glm::normalize(pull);
+
+    //calculate gravitational pull
+    pull *= gravityPull(c1.getMass(), c2.getMass(), length);
+}
+
 void Simulation::applyForcePhase() {
-    for(std::vector<Planet*>::iterator i = mPlanets.begin(); i != mPlanets.end(); i++) {
-        glm::vec3 pull;
+    for(std::vector<Celestial*>::iterator i = mCelestial.begin(); i != mCelestial.end(); i++) {
 
-        //get unit vector towards sun
-        pull = -1.0f * (*i)->getPos();
-        float length = glm::length(pull);
-        pull = glm::normalize(pull);
-
-        //calculate gravitational pull
-        pull = gravityPull((*i)->getMass(), mSun->getMass(), length) * pull;
-
-        (*i)->setPull(pull);
+        for(std::vector<Celestial*>::iterator j = mCelestial.begin(); j != mCelestial.end(); j++) {
+            if((*i) == (*j))
+                continue;
+            (*i)->addPull(calculateForce((*(*i)), (*(*j))));
+        }
     }
 }
 
 void Simulation::moveCelestialPhase(double deltaTime) {
-    for(std::vector<Planet*>::iterator i = mPlanets.begin(); i != mPlanets.end(); i++) {
+    for(std::vector<Celestial*>::iterator i = mCelestial.begin(); i != mCelestial.end(); i++) {
         (*i)->applyPhysics(deltaTime);
     }
+
+    mCamera->view = glm::lookAt(glm::vec3(follow->getPos() + glm::dvec3(0, 50, 50)), glm::vec3(follow->getPos()), glm::vec3(0,1,0));
 }
 
-void Simulation::Draw(GLuint shader, GLuint sunShader) {
-    mSun->Draw(sunShader);
+void Simulation::Draw() {
 
-    for(std::vector<Planet*>::iterator i = mPlanets.begin(); i != mPlanets.end(); i++) {
-        (*i)->Draw(shader);
+    for(std::vector<Celestial*>::iterator i = mCelestial.begin(); i != mCelestial.end(); i++) {
+        (*i)->Draw();
     }
 }
