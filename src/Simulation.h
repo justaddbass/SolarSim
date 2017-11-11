@@ -5,8 +5,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-//#include "star.h"
-//#include "Planet.h"
 #include "Celestial.h"
 #include "camera.h"
 
@@ -25,9 +23,6 @@ private:
     std::vector<Celestial*> mCelestial;
     Celestial* follow;
     camera* mCamera;
-
-    // TODO: units
-    double adjustedGravity(double m1, double m2, double r);
 
     double gravityPull(double m1, double m2, double r);
 };

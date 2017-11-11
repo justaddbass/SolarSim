@@ -17,7 +17,7 @@
 
 int main(int, char**) {
 
-	SDLWrapper::Init();
+	SDLWrapper::Init(800, 600, "SolarSim");
 
 	camera cam = camera();
 
@@ -55,8 +55,8 @@ int main(int, char**) {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		//sim.applyForcePhase();
-		//sim.moveCelestialPhase(deltaTime);
+		sim.applyForcePhase();
+		sim.moveCelestialPhase(deltaTime);
 		sim.Draw();
 
 		SDLWrapper::swapBuffer();

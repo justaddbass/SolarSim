@@ -22,11 +22,6 @@ double Simulation::gravityPull(double m1, double m2, double r) {
     return G * ( (m1 * m2) / pow(r, 2));
 }
 
-// kilometers and kilograms
-double Simulation::adjustedGravity(double m1, double m2, double r) {
-    return gravityPull(m1 * 1000, m2 * 1000, r);
-}
-
 glm::dvec3 Simulation::calculateForce(Celestial c1, Celestial c2) {
     glm::dvec3 pull;
 
@@ -37,6 +32,7 @@ glm::dvec3 Simulation::calculateForce(Celestial c1, Celestial c2) {
 
     //calculate gravitational pull
     pull *= gravityPull(c1.getMass(), c2.getMass(), length);
+    return pull;
 }
 
 void Simulation::applyForcePhase() {

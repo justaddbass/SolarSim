@@ -5,8 +5,6 @@
 
 #include "Simulation.h"
 
-//const Mesh Celestial::mMesh = Mesh("sphere.obj");
-
 Celestial::Celestial(double mass, float scale, glm::dvec3 initialVel, glm::dvec3 initialPos, GLuint shader, camera* cam) :
     mMesh(Mesh("sphere.obj")) {
     mMass = mass;
@@ -36,6 +34,6 @@ void Celestial::addPull(glm::dvec3 pull) {
 
 void Celestial::applyPhysics(double deltaTime) {
     mVelocity += mPull / mMass * deltaTime;
-    mModel = glm::translate(mModel, mVelocity);
+    //mModel = glm::translate(mModel, mVelocity);
     mPull = glm::dvec3(0,0,0);
 }

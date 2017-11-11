@@ -7,14 +7,14 @@ namespace SDLWrapper {
 
 struct SDLInfo {
     SDL_Window* window;
-    unsigned int windowHeight = 600, windowWidth = 800;
+    //unsigned int windowHeight = 600, windowWidth = 800;
     SDL_GLContext glContext;
     SDL_Event e;
 };
 
 SDLInfo sdlInfo;
 
-    void Init() {
+    void Init(int width, int height, const char* title) {
 
         SDL_Init(SDL_INIT_EVERYTHING);
 
@@ -30,7 +30,7 @@ SDLInfo sdlInfo;
 
         SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
-        sdlInfo.window = SDL_CreateWindow("SolarSim", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, sdlInfo.windowWidth, sdlInfo.windowHeight, SDL_WINDOW_OPENGL);
+        sdlInfo.window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_OPENGL);
         sdlInfo.glContext = SDL_GL_CreateContext(sdlInfo.window);
 
         SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
@@ -41,7 +41,7 @@ SDLInfo sdlInfo;
         SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,32);
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);
 
-        glViewport(0,0, sdlInfo.windowWidth, sdlInfo.windowHeight);
+        glViewport(0,0, width, height);
         glEnable(GL_MULTISAMPLE);
 
         glEnable(GL_DEPTH_TEST);
