@@ -7,6 +7,7 @@
 
 #include "Celestial.h"
 #include "camera.h"
+#include "include.h"
 
 class Simulation {
 public:
@@ -16,7 +17,7 @@ public:
     void addCelestial(Celestial* c);
     void Draw();
 
-    glm::dvec3 calculateForce(Celestial c1, Celestial c2);
+    vec3 calculateForce(Celestial c1, Celestial c2);
     void applyForcePhase();
     void moveCelestialPhase(double deltaTime);
 private:
@@ -24,7 +25,7 @@ private:
     Celestial* follow;
     camera* mCamera;
 
-    double gravityPull(double m1, double m2, double r);
+    double gravityPull(float m1, float m2, float r);
 };
 
 #endif

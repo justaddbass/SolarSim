@@ -5,16 +5,17 @@
 
 #include "Simulation.h"
 
-Celestial::Celestial(double mass, float scale, glm::dvec3 initialVel, glm::dvec3 initialPos, GLuint shader, camera* cam) :
+Celestial::Celestial(double mass, float scale, vec3 initialVel, vec3 initialPos, GLuint shader, camera* cam) :
     mMesh(Mesh("sphere.obj")) {
     mMass = mass;
     mScale = scale;
     mVelocity = initialVel;
-    mModel = glm::translate(glm::dmat4(), initialPos);
+    mModel = glm::translate(mat4(), initialPos);
     mShader = shader;
-    //glUseProgram(shader);
+    glUseProgram(shader);
     mCamera = cam;
-    //glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, &mCamera->projection[0][0]);
+    glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, &mCamera->projection[0][0]);
+    glUseProgram(0);
 }
 
 void Celestial::Draw() {
@@ -22,18 +23,19 @@ void Celestial::Draw() {
     GLuint modelID = glGetUniformLocation(mShader, "model");
     GLuint scaleID = glGetUniformLocation(mShader, "scale");
     GLuint viewID = glGetUniformLocation(mShader, "view");
-    glUniformMatrix4dv(modelID, 1 , GL_FALSE, &mModel[0][0]);
-    glUniformMatrix4fv(viewID, 1, GL_FALSE, &mCamera->view[0][0]);
+    glUniformMatrix4fv(modelID, 1 , GL_FALSE, &glm::mat4(mModel)[0][0]);
+    //glUniformMatrix4fv(viewID, 1, GL_FALSE, &mCamera->view[0][0]);
     glUniform1f(scaleID, mScale);
     mMesh.Draw(mShader);
+    glUseProgram(0);
 }
 
-void Celestial::addPull(glm::dvec3 pull) {
+void Celestial::addPull(vec3 pull) {
     mPull += pull;
 }
 
 void Celestial::applyPhysics(double deltaTime) {
     mVelocity += mPull / mMass * deltaTime;
-    //mModel = glm::translate(mModel, mVelocity);
-    mPull = glm::dvec3(0,0,0);
+    mModel = glm::translate(mModel, mVelocity);
+    mPull = vec3(0,0,0);
 }

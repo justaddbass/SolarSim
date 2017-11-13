@@ -1,5 +1,10 @@
 #pragma once
 
+#ifdef __APPLE__
+    #include <OpenGL/gl3.h>
+#else
+    #include <GL/glew.h>
+#endif
 #include <SDL2/SDL.h>
 #include <cstdio>
 
@@ -64,6 +69,12 @@ SDLInfo sdlInfo;
 
     void swapBuffer() {
         SDL_GL_SwapWindow(sdlInfo.window);
+    }
+
+    void deleteSDL() {
+        SDL_GL_DeleteContext(sdlInfo.glContext);
+    	SDL_DestroyWindow(sdlInfo.window);
+    	SDL_Quit();
     }
 
 }

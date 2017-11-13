@@ -5,15 +5,16 @@
 
 #include "Mesh.h"
 #include "camera.h"
+#include "include.h"
 
 class Celestial {
 public:
     Celestial() {};
-    Celestial(double mass, float scale, glm::dvec3 initialVel, glm::dvec3 initialPos, GLuint shader, camera* cam);
+    Celestial(double mass, float scale, vec3 initialVel, vec3 initialPos, GLuint shader, camera* cam);
 
-    void addPull(glm::dvec3 pull);
+    void addPull(vec3 pull);
     void applyPhysics(double deltaTime);
-    inline glm::dvec3 getPos() {return mModel[3];}
+    inline vec3 getPos() {return mModel[3];}
     inline double getMass() {return mMass;}
     void Draw();
 protected:

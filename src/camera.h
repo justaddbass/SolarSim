@@ -10,7 +10,7 @@ typedef struct camera {
 
     camera() {
         view = glm::mat4();
-        projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
+        projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
     }
 } camera;
 
