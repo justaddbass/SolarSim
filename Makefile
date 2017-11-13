@@ -11,7 +11,7 @@ CPPFLAGS=-g -std=c++11 $(SDL_CFLAGS) -I$(INCLUDE) -I$(LOCAL_INCLUDE) -I$(LIB_DIR
 #CPPFLAGS+=-g -O2 -I$(DIR) -I$(LUA_INC) -L$(LUA_LIB)
 TARGET = SolarSim
 
-UNIX_LIBS=-lSDL2 -lGL -lGLEW -llua -lassimp
+UNIX_LIBS=-lSDL2 -lGL -lGLEW -lassimp
 MAC_LIBS=-framework OpenGL $(SDL_LIBS) -llua -lassimp #$(shell pkg-config --libs glew)
 
 OBJ := $(patsubst %.cpp,%.o,$(wildcard src/*.cpp) $(wildcard src/**/*.cpp))
@@ -27,7 +27,7 @@ endif
 
 
 $(TARGET): bin $(OBJ)
-	$(CC) $(LIBS) $(OBJ) -o bin/$@
+	$(CC) $(OBJ) -o bin/$@ $(LIBS)
 
 bin:
 	mkdir -p $@
