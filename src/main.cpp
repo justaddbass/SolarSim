@@ -40,13 +40,13 @@ int main(int, char**) {
 	glUniform1f(glGetUniformLocation(planetShader, "scale"), 1.0f);
 //*/
 	Simulation sim = Simulation(&cam);
-	Celestial planet1 = Celestial(50, 0.2, vec3(0,0,0.05), vec3(4,0,0), planetShader, &cam);
-	Celestial planet2 = Celestial(25, 0.5, vec3(0,0,-0.05), vec3(-4,0,0), planetShader, &cam);
-	Celestial sun1 = Celestial(1000000.0, 1.0, vec3(0.0), vec3(0.0), sunShader, &cam);
-	sim.addCelestial(&planet1);
-	sim.addCelestial(&planet2);
-	sim.addCelestial(&sun1);
-	sim.setCameraFollow(&sun1);
+	Celestial earth = Celestial(3.99*pow(10, 16), 4.26*pow(10,-2), vec3(2*pow(10,-7),0,0), vec3(1,0,0), planetShader, &cam);
+    //Celestial planet2 = Celestial(25, 0.5, vec3(0,0,-0.05), vec3(-4,0,0), planetShader, &cam);
+	Celestial sun = Celestial(1.33*pow(10,22), 4.65*pow(10,-2), vec3(0.0), vec3(0.0), sunShader, &cam);
+	sim.addCelestial(&earth);
+	//sim.addCelestial(&planet2);
+	sim.addCelestial(&sun);
+	sim.setCameraFollow(&sun);
 
     SDL_Event sdlEvent;
     bool isRunning = true;
@@ -67,7 +67,7 @@ int main(int, char**) {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// sim.applyForcePhase();
+		sim.applyForcePhase();
 		sim.moveCelestialPhase(deltaTime);
 		sim.Draw();
 

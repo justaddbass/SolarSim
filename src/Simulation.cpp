@@ -31,7 +31,7 @@ vec3 Simulation::calculateForce(Celestial c1, Celestial c2) {
     pull = glm::normalize(pull);
 
     //calculate gravitational pull
-    pull = pull * gravityPull(c1.getMass(), c2.getMass(), length);
+    pull = pull * gravityPull(c1.getMass(), c2.getMass(), length) / 1.5*pow(10,8);
     return pull;
 }
 
@@ -51,7 +51,7 @@ void Simulation::moveCelestialPhase(double deltaTime) {
         (*i)->applyPhysics(deltaTime);
     }
 
-    mCamera->view = glm::lookAt(glm::vec3(follow->getPos() + glm::dvec3(0, 40, 40)), glm::vec3(follow->getPos()), glm::vec3(0,1,0));
+    mCamera->view = glm::lookAt(glm::vec3(follow->getPos() + glm::dvec3(0, 12, 12)), glm::vec3(follow->getPos()), glm::vec3(0,1,0));
 }
 
 void Simulation::Draw() {
