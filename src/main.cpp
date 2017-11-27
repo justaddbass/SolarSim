@@ -90,9 +90,12 @@ int main(int, char**) {
 	Simulation sim = Simulation();
 	Planet p = Planet(50, glm::vec3(0,0,0.05), glm::vec3(30,0,0));
 	Planet p2 = Planet(25, glm::vec3(0,0,-0.05), glm::vec3(-20,0,0));
+    Planet m1 = Planet(2, glm::vec3(0,0,-0.03), glm::vec3(-19,0,0));
+    p2.addMoon(&m1);
 	sim.setStar(100000000);
 	sim.addPlanet(&p);
 	sim.addPlanet(&p2);
+
 
     SDL_Event sdlEvent;
     bool isRunning = true;

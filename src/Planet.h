@@ -1,6 +1,8 @@
 #ifndef PLANET
 #define PLANET
 
+#include <vector>
+
 #include "Celestial.h"
 
 class Planet {
@@ -12,6 +14,8 @@ public:
     glm::vec3 getPos();
     inline float getMass() {return mMass;}
     void applyPhysics(double deltaTime);
+    void addMoon(Planet* moon);
+    std::vector<Planet*> moons;
 private:
     float mMass;
     Mesh mMesh;
@@ -19,6 +23,7 @@ private:
     glm::vec3 mPull;
     glm::mat4 mModel;
     GLuint modelID;
+
 };
 
 #endif

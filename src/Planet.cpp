@@ -17,6 +17,12 @@ void Planet::Draw(GLuint shader) {
     GLuint modelID = glGetUniformLocation(shader, "model");
     glUniformMatrix4fv(modelID, 1 , GL_FALSE, &mModel[0][0]);
     mMesh.Draw(shader);
+
+    if(moons.size() > 0) {
+        for(std::vector<Planet*>::iterator i = moons.begin(); i != moons.end(); ++i) {
+            (*i)->Draw(shader);
+        }
+    }
 }
 
 void Planet::addPull(glm::vec3 pull) {
@@ -35,4 +41,14 @@ void Planet::applyPhysics(double deltaTime) {
     float length = glm::length(mInertia);
     mInertia += mPull / mMass * (float)deltaTime;
     mModel = glm::translate(mModel, mInertia);
+
+    if(moons.size() > 0) {
+        for(std::vector<Planet*>::iterator i = moons.begin(); i != moons.end(); ++i) {
+            (*i)->applyPhysics(deltaTime);
+        }
+    }
+}
+
+void Planet::addMoon(Planet* moon) {
+    moons.push_back(moon);
 }

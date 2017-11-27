@@ -29,6 +29,17 @@ void Simulation::applyForcePhase() {
         pull = gravityPull((*i)->getMass(), mSun->getMass(), length) * pull;
 
         (*i)->setPull(pull);
+
+        if((*i)->moons.size() > 0) {
+            for(std::vector<Planet*>::iterator j = (*i)->moons.begin(); j != (*i)->moons.end(); j++) {
+                glm::vec3 moonPull;
+                moonPull = (*i)->getPos() - (*j)->getPos();
+                float moonLength = glm::length(moonPull);
+                moonPull = glm::normalize(moonPull);
+                moonPull = gravityPull((*i)->getMass(), (*j)->getMass(), moonLength) * moonPull;
+                (*j)->setPull(moonPull);
+            }
+        }
     }
 }
 
