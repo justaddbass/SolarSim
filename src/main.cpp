@@ -109,14 +109,15 @@ int main(int, char**) {
 	Planet p3 = Planet(50, glm::vec3(0.1,0,0), glm::vec3(-10,10,0));
 	Planet p4 = Planet(50, glm::vec3(0,-0.08169,0), glm::vec3(0,0,20));
 	Planet p5 = Planet(50, glm::vec3(0,0,-0.08169), glm::vec3(10,10,0));
-    Planet m1 = Planet(1, glm::vec3(0,0,-0.000057), glm::vec3(-19.5,0,0));
-    // p2.addMoon(&m1);
+	Planet p6 = Planet(50, glm::vec3(0.09,0,0), glm::vec3(-20,10,0));
+
 	sim.setStar(100000000); //1*10^8
 	sim.addPlanet(&p);
 	sim.addPlanet(&p2);
 	sim.addPlanet(&p3);
 	sim.addPlanet(&p4);
 	sim.addPlanet(&p5);
+	sim.addPlanet(&p6);
 
     SDL_Event sdlEvent;
     bool isRunning = true;
@@ -170,7 +171,7 @@ int main(int, char**) {
         view = glm::lookAt(pos, glm::vec3(0,0,0), glm::vec3(0,1,0));
 		glUniformMatrix4fv(pviewID, 1, GL_FALSE, &view[0][0]);
 
-		glUniform3f(pViewPosID, 0.0f, 50.0f, 50.0f);
+		glUniform3f(pViewPosID, pos.x, pos.y, pos.z);
         // glUniform1ui(pCountID, count);
         // glUniform1ui(sCountID, count);
 

@@ -17,5 +17,5 @@ void main() {
     gl_Position = projection * view * model * vec4(vertexPosition_modelspace, 1.0);
     fragPos = gl_Position.xyz;
     normal = vertexNormal_modelspace;
-    //normalEyeSpace = normalize(transpose(inverse(model)) * vec4(normal,1.0)).xyz;
+    normalEyeSpace = normalize(transpose(inverse(model)) * vec4(normal,1.0)).xyz;
 }
