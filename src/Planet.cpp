@@ -6,7 +6,8 @@
 
 
 Planet::Planet(int mass, glm::vec3 initialVel, glm::vec3 initialPos) :
-    mMesh(Mesh("sphere.obj")) {
+    mMesh(Mesh("sphere.obj")),
+    trail(Trail(200)) {
     mModel = glm::translate(glm::mat4(), initialPos);
     mInertia = initialVel;
     mMass = mass;
@@ -17,6 +18,7 @@ void Planet::Draw(GLuint shader) {
     GLuint modelID = glGetUniformLocation(shader, "model");
     glUniformMatrix4fv(modelID, 1 , GL_FALSE, &mModel[0][0]);
     mMesh.Draw(shader);
+    //trail.draw();
 
     if(moons.size() > 0) {
         for(std::vector<Planet*>::iterator i = moons.begin(); i != moons.end(); ++i) {
@@ -41,6 +43,8 @@ void Planet::applyPhysics(double deltaTime) {
     float length = glm::length(mInertia);
     mInertia += mPull / mMass * (float)deltaTime;
     mModel = glm::translate(mModel, mInertia);
+
+    //trail.addPoint(getPos());
 
     if(moons.size() > 0) {
         for(std::vector<Planet*>::iterator i = moons.begin(); i != moons.end(); ++i) {

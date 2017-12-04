@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Celestial.h"
+#include "trail.h"
 
 class Planet {
 public:
@@ -23,6 +24,7 @@ private:
     glm::vec3 mPull;
     glm::mat4 mModel;
     GLuint modelID;
+    Trail trail;
 
 };
 

@@ -15,6 +15,7 @@
 
 //#include "Mesh.h"
 #include "Simulation.h"
+#include "Skybox.h"
 
 int main(int, char**) {
 
@@ -72,30 +73,50 @@ int main(int, char**) {
     glm::mat4 view = glm::lookAt(glm::vec3(0, 50, 50), glm::vec3(0,0,0), glm::vec3(0,1,0));
 	glm::mat4 model = glm::mat4();
     GLuint planetShader, sunShader;
-	GLuint pviewID, pprojectionID, sviewID, sprojectionID;
+	GLuint pviewID, pprojectionID, sviewID, sprojectionID, pCountID, sCountID, pViewPosID;
     planetShader = LoadShaders("basic.vs", "basic.fs");
 	sunShader = LoadShaders("basic.vs", "sun.fs");
     glUseProgram(planetShader);
     pviewID = glGetUniformLocation(planetShader, "view");
     pprojectionID = glGetUniformLocation(planetShader, "projection");
+	pViewPosID = glGetUniformLocation(planetShader, "viewPos");
+    //pCountID = glGetUniformLocation(planetShader, "count");
     glUniformMatrix4fv(pviewID, 1 , GL_FALSE, &view[0][0]);
     glUniformMatrix4fv(pprojectionID, 1, GL_FALSE, &projection[0][0]);
 	glUseProgram(sunShader);
 	sviewID = glGetUniformLocation(sunShader, "view");
     sprojectionID = glGetUniformLocation(sunShader, "projection");
+    //sCountID = glGetUniformLocation(sunShader, "count");
     glUniformMatrix4fv(sviewID, 1 , GL_FALSE, &view[0][0]);
     glUniformMatrix4fv(sprojectionID, 1, GL_FALSE, &projection[0][0]);
 	glUseProgram(0);
 
+	//Skybox
+	std::vector<const GLchar*> faces;
+	faces.push_back("res/skybox_right.png");
+	faces.push_back("res/skybox_left.png");
+	faces.push_back("res/skybox_up.png");
+	faces.push_back("res/skybox_down.png");
+	faces.push_back("res/skybox_back.png");
+	faces.push_back("res/skybox_front.png");
+	Skybox sb(faces);
+	GLuint vpID = glGetUniformLocation(sb.getShader(), "vp");
+	glm::mat4 vp_mat = projection * view;
+
 	Simulation sim = Simulation();
 	Planet p = Planet(50, glm::vec3(0,0,0.05), glm::vec3(30,0,0));
-	Planet p2 = Planet(25, glm::vec3(0,0,-0.05), glm::vec3(-20,0,0));
-    Planet m1 = Planet(2, glm::vec3(0,0,-0.03), glm::vec3(-19,0,0));
-    p2.addMoon(&m1);
-	sim.setStar(100000000);
+	Planet p2 = Planet(50, glm::vec3(0,0,-0.08169), glm::vec3(-20,0,0));
+	Planet p3 = Planet(50, glm::vec3(0.1,0,0), glm::vec3(-10,10,0));
+	Planet p4 = Planet(50, glm::vec3(0,-0.08169,0), glm::vec3(0,0,20));
+	Planet p5 = Planet(50, glm::vec3(0,0,-0.08169), glm::vec3(10,10,0));
+    Planet m1 = Planet(1, glm::vec3(0,0,-0.000057), glm::vec3(-19.5,0,0));
+    // p2.addMoon(&m1);
+	sim.setStar(100000000); //1*10^8
 	sim.addPlanet(&p);
 	sim.addPlanet(&p2);
-
+	sim.addPlanet(&p3);
+	sim.addPlanet(&p4);
+	sim.addPlanet(&p5);
 
     SDL_Event sdlEvent;
     bool isRunning = true;
@@ -103,24 +124,66 @@ int main(int, char**) {
 	Uint64 NOW = SDL_GetPerformanceCounter();
 	Uint64 LAST = 0;
 	double deltaTime = 0;
+    unsigned int count = 0;
+
+	double phi = 0;
+	double phi2 = 0;
+    const double PI = 3.14159265;
+	bool isPaused = false;
 
     while(isRunning) {
+        // count++;
 		LAST = NOW;
    		NOW = SDL_GetPerformanceCounter();
    		deltaTime = (double)((NOW - LAST)*1000 / SDL_GetPerformanceFrequency() );
 
-        SDL_PollEvent(&sdlEvent);
-        if(sdlEvent.type == SDL_QUIT) {
-            isRunning = false;
-        }
+        while(SDL_PollEvent(&sdlEvent)) {
+			switch(sdlEvent.type) {
+		        case SDL_QUIT:
+					isRunning = 0;
+					break;
+				case SDL_KEYDOWN:
+					if(sdlEvent.key.keysym.sym == SDLK_LEFT)
+						phi -= 0.02;
+					if(sdlEvent.key.keysym.sym == SDLK_RIGHT)
+						phi += 0.02;
+					if(sdlEvent.key.keysym.sym == SDLK_UP)
+						phi2 += 0.02;
+					if(sdlEvent.key.keysym.sym == SDLK_DOWN)
+						phi2 -= 0.02;
+					if(sdlEvent.key.keysym.sym == SDLK_p)
+						isPaused = !isPaused;
+					break;
+			}
+		}
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		sim.applyForcePhase();
-		sim.moveCelestialPhase(deltaTime);
+		glDisable(GL_DEPTH_TEST);
+		glUseProgram(sb.getShader());
+		glUniformMatrix4fv(vpID, 1, GL_FALSE, &vp_mat[0][0]);
+		//sb.Draw();
+		glEnable(GL_DEPTH_TEST);
+
+		glUseProgram(planetShader);
+		glm::vec3 pos = glm::vec3(50*cos(phi), 50*tan(phi2), 50*sin(phi));
+        view = glm::lookAt(pos, glm::vec3(0,0,0), glm::vec3(0,1,0));
+		glUniformMatrix4fv(pviewID, 1, GL_FALSE, &view[0][0]);
+
+		glUniform3f(pViewPosID, 0.0f, 50.0f, 50.0f);
+        // glUniform1ui(pCountID, count);
+        // glUniform1ui(sCountID, count);
+
+		if(!isPaused) {
+			sim.applyForcePhase();
+			sim.moveCelestialPhase(deltaTime);
+		}
+
 		sim.Draw(planetShader, sunShader);
 
         SDL_GL_SwapWindow(g_window);
+		if(phi >= 2 * PI)
+            phi = 0;
     }
 
     SDL_Quit();
